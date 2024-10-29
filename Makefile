@@ -1,41 +1,57 @@
-NAME			= philo
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: matteo <matteo@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/10/29 23:14:38 by matteo            #+#    #+#              #
+#    Updated: 2024/10/29 23:14:39 by matteo           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-INC				= inc/
-SRC_DIR			= src/
-OBJ_DIR			= obj/
+NAME	= philo
+CC		= gcc
+CFLAGS	= -Werror -Wall -Wextra -pthread
 
-CC				= gcc
-CFLAGS			= -Wall -Wextra -Werror -I
-RM				= rm -f
-AR				= ar rcs
-
-LIBFT = libft/libft.a
+MODE	= none
+ifeq ($(MODE), pretty)
+	CFLAGS	+= -D DEBUG_FORMATTING=1
+endif
+ifeq ($(MODE), debug)
+	CFLAGS	+= -D DEBUG_FORMATTING=1 -fsanitize=thread -g
+endif
 
 SRC_PATH = sources/
+OBJ_PATH = obj/
 
+SRC		=	main.c \
+			return.c \
+			dress_table/parsing.c \
+			dress_table/init_table.c \
 
-SRC			=		main.c \
-					table.c
 
 SRCS	= $(addprefix $(SRC_PATH), $(SRC))
-OBJ 			= $(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRC))
+OBJ		= $(SRC:.c=.o)
+OBJS	= $(addprefix $(OBJ_PATH), $(OBJ))
 
-all: 			$(NAME)
+INC		= -I ./includes/
 
-$(NAME): 		$(OBJ)
-				@$(AR) $(NAME) $(OBJ)
+all: $(NAME)
 
-$(OBJ_DIR)%.o:	$(SRC_DIR)%.c
-				@mkdir -p $(@D)
-				@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c
+	@mkdir -p $(OBJ_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ $(INC)
+
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 clean:
-				@$(RM) -r $(OBJ_DIR)
-				@$(RM) .cache_exists
+	rm -rf $(OBJ_PATH)
 
-fclean: 		clean
-				@$(RM) $(NAME)
+fclean: clean
+	rm -f $(NAME)
 
-re: 			fclean all
+re: fclean all
 
-.PHONY: 		all clean fclean re
+.PHONY: all re clean fclean
