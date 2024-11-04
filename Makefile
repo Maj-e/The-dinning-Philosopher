@@ -6,7 +6,7 @@
 #    By: matteo <matteo@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/29 23:14:38 by matteo            #+#    #+#              #
-#    Updated: 2024/10/29 23:14:39 by matteo           ###   ########.fr        #
+#    Updated: 2024/10/30 04:52:12 by matteo           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ SRC_PATH = sources/
 OBJ_PATH = obj/
 
 SRC		=	main.c \
-			return.c \
+			prints.c \
 			dress_table/parsing.c \
 			dress_table/init_table.c \
 

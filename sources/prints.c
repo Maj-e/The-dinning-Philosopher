@@ -6,7 +6,7 @@
 /*   By: matteo <matteo@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 23:14:44 by matteo            #+#    #+#             */
-/*   Updated: 2024/10/29 23:40:30 by matteo           ###   ########.fr       */
+/*   Updated: 2024/10/30 02:42:44 by matteo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int error_failure(char *str, char *details, t_table *table)
         free_table(table);
     return (message(str, details, SUCCESS));
 }
-
 
 int message(char *str, char *detail, int exit_type)
 {
