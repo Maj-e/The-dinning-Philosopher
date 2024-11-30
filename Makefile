@@ -3,16 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: matteo <matteo@student.42.fr>              +#+  +:+       +#+         #
+#    By: mjeannin <mjeannin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/10/29 23:14:38 by matteo            #+#    #+#              #
-#    Updated: 2024/10/30 04:52:12 by matteo           ###   ########.fr        #
+#    Created: 2024/11/30 11:43:54 by mjeannin          #+#    #+#              #
+#    Updated: 2024/11/30 17:19:03 by mjeannin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+
 NAME	= philo
 CC		= gcc
-CFLAGS	= -Werror -Wall -Wextra -pthread
+CFLAGS	= -Werror -Wall -Wextra -pthread -g
 
 MODE	= none
 ifeq ($(MODE), pretty)
@@ -22,13 +23,15 @@ ifeq ($(MODE), debug)
 	CFLAGS	+= -D DEBUG_FORMATTING=1 -fsanitize=thread -g
 endif
 
-SRC_PATH = sources/
+SRC_PATH = src/
 OBJ_PATH = obj/
 
 SRC		=	main.c \
-			prints.c \
-			dress_table/parsing.c \
-			dress_table/init_table.c \
+			set_table.c \
+			monitor.c \
+			routine.c \
+			threads.c \
+			utils.c \
 
 
 SRCS	= $(addprefix $(SRC_PATH), $(SRC))

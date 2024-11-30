@@ -1,94 +1,89 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mjeannin <mjeannin@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/30 11:44:00 by mjeannin          #+#    #+#             */
+/*   Updated: 2024/11/30 13:19:26 by mjeannin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-
-//---------------------------------LIBS---------------------------------------
 # include <pthread.h>
-# include <limits.h>
-# include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
-# include <stdbool.h>
-# include "../libft/inc/libft.h"
+# include <unistd.h>
 
-# define	SUCCESS				0
-# define	FAILURE				1
-# define	PHILO_MAX			250
-# define	PHILO_MAX_STR		"250"
-
-# ifndef 	DEBUG_FORMATTING
-#  define 	DEBUG_FORMATTING 	0
-# endif
-//
-# define 	MALLOC_ERR			"%s error: Memory allocation failed\n"
-# define 	EXIT_FAIL			"%s error: "
-# define	MUTEX_ERROR			"%s error: Could not create mutex.\n"
-# define	THREAD_ERROR		"%s error: Could not create thread.\n"
-//
-# define	PARAMS				"%s usage: please use ./philo <number_of_philosophers> \
-									<time_to_die> <time_to_eat> <time_to_sleep> \
-									[number_of_times_each_philosopher_must_eat]\n"
-//
-# define	DIGIT_INPUT_ERROR 	"%s invalid input: %s: \
-									the range should be between 0 and 2147483647.\n"
-//
-# define	ERROR_INPUT_FLOW	"%s invalid input: \
-									there must be between 1 and %s philosophers.\n"
-//
-
-
-//---------------------------------STRUCT----------------------------------
-
-typedef struct s_philo t_philo;
-
-typedef struct s_table
-{
-    time_t      start_t;
-    int             	number_of_philosophers;
-    int             	time_to_die;
-    int             	time_to_eat;
-    int             	time_to_sleep;
-	int					times_must_eat;
-    bool				sim_stop;
-	pthread_mutex_t		sim_stop_lock;
-	pthread_mutex_t		write_lock;
-	pthread_mutex_t		*fork_locks;
-	t_philo				**philos;
-	time_t				start_time;
-	pthread_t			grim_reaper;
-}	t_table;
+# define PHILO_MAX 200
 
 typedef struct s_philo
 {
-	pthread_t			thread;
-	unsigned int		id;
-	unsigned int		times_ate;
-	unsigned int		fork[2];
-	pthread_mutex_t		meal_time_lock;
-	time_t				last_meal;
-	t_table				*table;
-}	t_philo;
+	pthread_t		thread;
+	int				id;
+	int				eating;
+	int				meals_eaten;
+	size_t			last_meal;
+	size_t			time_to_die;
+	size_t			time_to_eat;
+	size_t			time_to_sleep;
+	size_t			start_time;
+	int				num_of_philos;
+	int				num_times_to_eat;
+	int				*dead;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*write_lock;
+	pthread_mutex_t	*dead_lock;
+	pthread_mutex_t	*meal_lock;
+}					t_philo;
 
-typedef enum e_status
+typedef struct s_run
 {
-	DIED = 0,
-	EATING = 1,
-	SLEEPING = 2,
-	THINKING = 3,
-	GOT_FORK_1 = 4,
-	GOT_FORK_2 = 5
-}	t_status;
+	int				dead_flag;
+	pthread_mutex_t	dead_lock;
+	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	write_lock;
+	t_philo			*philos;
+}					t_run;
 
-//--------------------------------FUNCTIONS-----------------------------------
+// Main functions
+int					check_arg_content(char *arg);
+int					check_valid_args(char **argv);
+void				destory_all(char *str, t_run *program,
+						pthread_mutex_t *forks);
 
+// Initialization
+void				init_run(t_run *program, t_philo *philos);
+void				init_forks(pthread_mutex_t *forks, int philo_num);
+void				install_philos(t_philo *philos, t_run *program,
+						pthread_mutex_t *forks, char **argv);
+void				init_input(t_philo *philo, char **argv);
 
-//---------------------------------return-------------------------------------
-int		error_failure(char *str, char *details, t_table *table);
-void    *null_error(char *str, char *details, t_table *table);
-int		message(char *str, char *detail, int exit_status);
-//--------------------------------output--------------------------------------
-void    write_outcome(t_table *table);
+// Threads
+int					thread_create(t_run *program, pthread_mutex_t *forks);
+void				*monitor(void *pointer);
+void				*philo_routine(void *pointer);
 
+// Actions
+void				eat(t_philo *philo);
+void				sleeping(t_philo *philo);
+void				think(t_philo *philo);
+
+// Monitor utils
+int					dead_loop(t_philo *philo);
+int					check_if_all_ate(t_philo *philos);
+int					check_if_dead(t_philo *philos);
+int					philosopher_dead(t_philo *philo, size_t time_to_die);
+
+// Utils
+int					ft_atoi(char *str);
+int					ft_usleep(size_t microseconds);
+int					ft_strlen(char *str);
+void				print_message(char *str, t_philo *philo, int id);
+size_t				get_current_time(void);
 
 #endif
