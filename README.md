@@ -37,5 +37,5 @@ In the Dining Philosophers problem, a group of philosophers sits around a circul
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-repo-name/dining-philosophers.git
+git clone git@github.com:Maj-e/The-dinning-Philosopher.git Philo
 cd dining-philosophers
